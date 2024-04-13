@@ -724,6 +724,16 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'manyToOne',
       'plugin::users-permissions.role'
     >;
+    comments: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'oneToMany',
+      'api::comment.comment'
+    >;
+    like: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'manyToOne',
+      'api::like.like'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -807,6 +817,7 @@ export interface ApiAuthorAuthor extends Schema.CollectionType {
       'api::nasheed.nasheed'
     >;
     picture: Attribute.Media & Attribute.Required;
+    description: Attribute.Text;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -838,11 +849,6 @@ export interface ApiCategoryCategory extends Schema.CollectionType {
   };
   attributes: {
     name: Attribute.String & Attribute.Required & Attribute.Unique;
-    nasheeds: Attribute.Relation<
-      'api::category.category',
-      'oneToMany',
-      'api::nasheed.nasheed'
-    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -857,6 +863,78 @@ export interface ApiCategoryCategory extends Schema.CollectionType {
       'oneToOne',
       'admin::user'
     > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiCommentComment extends Schema.CollectionType {
+  collectionName: 'comments';
+  info: {
+    singularName: 'comment';
+    pluralName: 'comments';
+    displayName: 'Comment';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    text: Attribute.Text;
+    users_permissions_user: Attribute.Relation<
+      'api::comment.comment',
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    nasheed: Attribute.Relation<
+      'api::comment.comment',
+      'manyToOne',
+      'api::nasheed.nasheed'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::comment.comment',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::comment.comment',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiLikeLike extends Schema.CollectionType {
+  collectionName: 'likes';
+  info: {
+    singularName: 'like';
+    pluralName: 'likes';
+    displayName: 'Like';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    users: Attribute.Relation<
+      'api::like.like',
+      'oneToMany',
+      'plugin::users-permissions.user'
+    >;
+    nasheed: Attribute.Relation<
+      'api::like.like',
+      'oneToOne',
+      'api::nasheed.nasheed'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::like.like', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::like.like', 'oneToOne', 'admin::user'> &
       Attribute.Private;
   };
 }
@@ -880,12 +958,18 @@ export interface ApiNasheedNasheed extends Schema.CollectionType {
       'manyToOne',
       'api::author.author'
     >;
+    picture: Attribute.Media;
+    listen_link: Attribute.String & Attribute.Required;
     category: Attribute.Relation<
       'api::nasheed.nasheed',
-      'manyToOne',
+      'oneToOne',
       'api::category.category'
     >;
-    picture: Attribute.Media;
+    comments: Attribute.Relation<
+      'api::nasheed.nasheed',
+      'oneToMany',
+      'api::comment.comment'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -924,6 +1008,8 @@ declare module '@strapi/types' {
       'plugin::i18n.locale': PluginI18NLocale;
       'api::author.author': ApiAuthorAuthor;
       'api::category.category': ApiCategoryCategory;
+      'api::comment.comment': ApiCommentComment;
+      'api::like.like': ApiLikeLike;
       'api::nasheed.nasheed': ApiNasheedNasheed;
     }
   }

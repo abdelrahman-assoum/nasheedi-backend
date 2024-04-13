@@ -16,12 +16,6 @@
       "type": "string",
       "required": true,
       "unique": true
-    },
-    "nasheeds": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::nasheed.nasheed",
-      "mappedBy": "category"
     }
   }
 }

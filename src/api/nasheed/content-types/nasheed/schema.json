@@ -26,12 +26,6 @@
       "target": "api::author.author",
       "inversedBy": "nasheeds"
     },
-    "category": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::category.category",
-      "inversedBy": "nasheeds"
-    },
     "picture": {
       "type": "media",
       "multiple": false,
@@ -39,6 +33,21 @@
       "allowedTypes": [
         "images"
       ]
+    },
+    "listen_link": {
+      "type": "string",
+      "required": true
+    },
+    "category": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::category.category"
+    },
+    "comments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::comment.comment",
+      "mappedBy": "nasheed"
     }
   }
 }
